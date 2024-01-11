@@ -70,9 +70,12 @@ def update_book(book_id):
 @app.route("/books/<int:book_id>",methods=["DELETE"])
 @jwt_required()
 def delete_book(book_id):
-    global books
-    books = [b for b in books if b["id"]!=book_id]
-    return jsonify({"message":"Book deleted successfully"})
+    book = next((b for b in books if b["id"]==book_id),None)
+    if book:
+        books.remove(book)
+        return jsonify({"message":"Book deleted successfully"}),200
+    else:
+        return jsonify({"error":"Book not found"}),404
     
 
 
